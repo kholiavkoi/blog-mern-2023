@@ -1,23 +1,36 @@
 import React from 'react';
 import { AiFillEye, AiOutlineMessage } from 'react-icons/ai'
+import Moment from 'react-moment'
 
-const PostItem = () => {
+const PostItem = ({ post }) => {
+
+	if (!post) {
+		return (
+			<div className='text-xl text-center text-white py-10'>No posts.</div>
+		)
+	}
 	return (
 		<div className='flex flex-col basis-1/4 flex-grow'>
-			<div>IMAGE</div>
-			<div className='flex justify-between items-center pt-2'>
-				<div className="text-xs text-white opacity-50">USERNAME</div>
-				<div className="text-xs text-white opacity-50">DATA</div>
+			<div className={post.imgUrl ? 'flex rounded-sm h-80' : 'flex rounded-sm'}>
+				{post.imgUrl && (
+					<img src={`http://localhost:3002/${post.imgUrl}`} alt="" className='object-cover w-full' />
+				)}
 			</div>
-			<div className="text-white text-xl">POST TITLE</div>
-			<p className='text-white opacity-60 text-xs pt-4'>POST TEXT</p>
+			<div className='flex justify-between items-center pt-2'>
+				<div className="text-xs text-white opacity-50">{post.username}</div>
+				<div className="text-xs text-white opacity-50">
+					<Moment date={post.createdAt} format='D MMM YYYY' />
+				</div>
+			</div>
+			<div className="text-white text-xl">{post.title}</div>
+			<p className='text-white opacity-60 text-xs pt-4'>{post.text}</p>
 
 			<div className='flex items-center gap-3 mt-2'>
 				<button className='flex items-center justify-center gap-2 text-xs text-white opacity-50'>
-					<AiFillEye /> <span>0</span>
+					<AiFillEye /> <span>{post.views}</span>
 				</button>
 				<button className='flex items-center justify-center gap-2 text-xs text-white opacity-50'>
-					<AiOutlineMessage /> <span>0</span>
+					<AiOutlineMessage /> <span>{post.comments?.length}</span>
 				</button>
 			</div>
 		</div>
