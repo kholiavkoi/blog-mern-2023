@@ -66,3 +66,32 @@ export const getAllPosts = async (req, res) => {
 		res.json({ message: 'Something went wrong' })
 	}
 }
+
+// Get Post by ID
+export const getPostById = async (req, res) => {
+	try {
+		const post = await Post.findByIdAndUpdate(req.params.id, {
+			$inc: { views: 1 }
+		})
+
+		res.json(post)
+	} catch (e) {
+		res.json({ message: 'Something went wrong' })
+	}
+}
+
+// Get My Posts
+export const getMyPosts = async (req, res) => {
+	try {
+		const user = await User.findById(req.userId)
+		const list = await Promise.all(
+			user.posts.map(post => {
+				return Post.findById(post._id)
+			})
+		)
+
+		res.json(list)
+	} catch (e) {
+		console.log(e)
+	}
+}
