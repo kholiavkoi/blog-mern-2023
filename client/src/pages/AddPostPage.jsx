@@ -39,7 +39,7 @@ const AddPostPage = () => {
 				<input type="file" className='hidden' onChange={e => setImage(e.target.files[0])} />
 			</label>
 			<div className='flex object-cover py-2'>
-				{image && <img src={URL.createObjectURL(image)} alt="img" />}
+				{image && <img src={URL.createObjectURL(image)} alt={image.name} />}
 			</div>
 
 			<label className='text-xs text-white opacity-70'>

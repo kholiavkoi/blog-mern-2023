@@ -17,6 +17,15 @@ export const createPost = createAsyncThunk('post/createPost', async (params) => 
 	}
 })
 
+export const updatePost = createAsyncThunk('post/updatePost', async(updatedPost) => {
+	try {
+		const { data } = await axios.put(`/posts/${updatedPost.id}`, updatedPost)
+		return data
+	} catch (e) {
+		console.log(e)
+	}
+})
+
 export const getAllPosts = createAsyncThunk('post/getAllPosts', async () => {
 		try {
 			const { data } = await axios.get('/posts')
@@ -27,6 +36,15 @@ export const getAllPosts = createAsyncThunk('post/getAllPosts', async () => {
 		}
 	}
 )
+
+export const deletePost = createAsyncThunk('post/deletePost', async (id) => {
+	try {
+		const { data } = await axios.delete(`/posts/${id}`, id)
+		return data
+	} catch (e) {
+		console.log(e)
+	}
+})
 
 export const postSlice = createSlice({
 	name: 'post',
@@ -45,6 +63,18 @@ export const postSlice = createSlice({
 			.addCase(createPost.rejected, (state) => {
 				state.loading = false
 			})
+			// Update Post
+			.addCase(updatePost.pending, (state) => {
+				state.loading = true
+			})
+			.addCase(updatePost.fulfilled, (state, action) => {
+				state.loading = false
+				const index = state.posts.findIndex(post => post._id === action.payload._id)
+				state.posts[index] = action.payload
+			})
+			.addCase(updatePost.rejected, (state) => {
+				state.loading = false
+			})
 			// Get All Posts
 			.addCase(getAllPosts.pending, (state) => {
 				state.loading = true
@@ -57,6 +87,18 @@ export const postSlice = createSlice({
 			.addCase(getAllPosts.rejected, (state) => {
 				state.loading = false
 			})
+			// Delete Post
+			.addCase(deletePost.pending, (state) => {
+				state.loading = true
+			})
+			.addCase(deletePost.fulfilled, (state, action) => {
+				state.loading = false
+				state.posts = state.posts.filter(post => post._id !== action.payload._id)
+			})
+			.addCase(deletePost.rejected, (state) => {
+				state.loading = false
+			})
+
 	}
 })
 

@@ -80,6 +80,31 @@ export const getPostById = async (req, res) => {
 	}
 }
 
+// Update Post
+export const updatePost = async (req, res) => {
+	try {
+		const { title, text, id } = req.body
+		const post = await Post.findById(id)
+
+		if (req.files) {
+			let fileName = Date.now().toString() + req.files.image.name
+			const __dirname = dirname(fileURLToPath(import.meta.url))
+			req.files.image.mv(path.join(__dirname, '..', 'uploads', fileName))
+			post.imgUrl = fileName || ''
+		}
+
+		post.title = title
+		post.text = text
+
+		await post.save()
+
+		res.json(post)
+
+	} catch (e) {
+		console.log(e)
+	}
+}
+
 // Get My Posts
 export const getMyPosts = async (req, res) => {
 	try {
@@ -99,14 +124,14 @@ export const getMyPosts = async (req, res) => {
 // Remove Post
 export const deletePost = async (req, res) => {
 	try {
-		const user = await User.findByIdAndDelete(req.params.id)
+		const user = await Post.findByIdAndDelete(req.params.id)
 		if (!user) return res.json({ message: 'Such post doesnt exist' })
 
 		await User.findByIdAndUpdate(req.userId, {
 			$pull: { posts: req.params.id }
 		})
 
-		res.json({message: 'Post has been deleted.'})
+		res.json({ message: 'Post has been deleted.' })
 
 	} catch (e) {
 		console.log(e)

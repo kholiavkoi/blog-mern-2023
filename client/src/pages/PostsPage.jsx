@@ -20,7 +20,6 @@ const PostsPage = () => {
 	return (
 		<div className='w-1/2 mx-auto py-10 flex flex flex-col gap-10'>
 			{posts && posts.map((post, i) => {
-				console.log(post)
 				return (
 					<PostItem post={post} key={i}/>
 				)
